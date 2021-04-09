@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 public class DolphinDBToOracleTask {
 
     public void run() {
-        System.out.println("cccc");
     }
 
 }

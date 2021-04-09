@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hhgs.shows.mapper.HistoryMapper">
+
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT ALL
+        <foreach collection="list" item="item" index="index">
+            INTO PLANT_SHOWS_HISTORY
+            (PLANT_CODE, REAL_ACTIVE_POWER, AVAILABLE_POWER, SCHEDULER_OF_ACTIV_POWER,THEORETICAL_REAL_POWER, CREATE_TIME)
+            VALUES
+            (#{item.plantCode}, #{item.realActivePower}, #{item.availablePower}, #{item.schedulerOfActivePower},#{item.theoreticalRealPower}, #{item.createTime})
+        </foreach>
+        SELECT 1 FROM DUAL
+    </insert>
+
+    <insert id="insertData" parameterType="com.hhgs.shows.model.History">
+        insert into PLANT_SHOWS_HISTORY
+        (PLANT_CODE, REAL_ACTIVE_POWER, AVAILABLE_POWER, SCHEDULER_OF_ACTIV_POWER,THEORETICAL_REAL_POWER, CREATE_TIME)
+         VALUES
+        (#{history.plantCode}, #{history.realActivePower}, #{history.availablePower}, #{history.schedulerOfActivePower},#{history.theoreticalRealPower}, #{history.createTime})
+    </insert>
+
+    <select id="queryByPlantCodeAndTime" resultType="com.hhgs.shows.model.History">
+        select
+            ID  id,
+            PLANT_CODE plantCode,
+            REAL_ACTIVE_POWER realActivePower,
+            AVAILABLE_POWER availablePower,
+            SCHEDULER_OF_ACTIV_POWER schedulerOfActivePower,
+            THEORETICAL_REAL_POWER theoreticalRealPower,
+            CREATE_TIME createTime
+        from PLANT_SHOWS_HISTORY where PLANT_CODE=#{plantCode} and CREATE_TIME &gt;= to_date(#{start},'yyyy-mm-dd hh24:mi:ss') and CREATE_TIME &lt; to_date(#{end},'yyyy-mm-dd hh24:mi:ss') order  by  CREATE_TIME  asc
+    </select>
+
+    <delete id="deleteByTime">
+        delete from PLANT_SHOWS_HISTORY where CREATE_TIME &gt;= to_date(#{start},'yyyy-mm-dd hh24:mi:ss') and CREATE_TIME &lt; to_date(#{end},'yyyy-mm-dd hh24:mi:ss') and PLANT_CODE=#{plantCode}
+    </delete>
+
+
+</mapper>

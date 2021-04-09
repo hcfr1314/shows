@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hhgs.shows.mapper.PlantShowsMapper">
+
+    <sql id="common">
+        PLANT_NAME AS plantName,
+        PLANT_CODE AS plantCode
+    </sql>
+
+    <sql id="data">
+        ID as id,
+        REAL_ACTIVE_POWER as realActivePower,
+        THEORETICAL_TOTAL_POWER as theoreticalTotalPower,
+        THEORETICAL_REAL_POWER as theoreticalRealPower,
+        AVAILABLE_POWER as availablePower,
+        GIVEN_VALUE_OF_ACTIVE_POWER as givenValueOfActivePower,
+        SCHEDULER_OF_ACTIV_POWER as schedulerOfActivePower,
+        PLANT_CODE as plantCode,
+        TIMESTAMP_POWER as timestampPower
+    </sql>
+
+
+    <!--条件查询-->
+    <select id="getDataByCondition" parameterType="com.hhgs.shows.model.ImportData"
+            resultType="com.hhgs.shows.model.ImportData">
+        select <include refid="data"></include>  from PLANT_SHOWS_POWER_DATA
+        WHERE 1=1 and to_number(REAL_ACTIVE_POWER) &gt; 0
+        <if test="importData.startTime != null and importData.endTime != null">
+            and TIMESTAMP_POWER &gt;= #{importData.startTime} and TIMESTAMP_POWER &lt;= #{importData.endTime}
+        </if>
+        <if test="importData.plantCode != null and importData.plantCode != ''">
+            and PLANT_CODE = #{importData.plantCode}
+        </if>
+        order by TIMESTAMP_POWER asc
+    </select>
+
+
+    <!--批量插入-->
+    <insert id="batchInsert" parameterType="com.hhgs.shows.model.ImportData">
+        insert all
+        <foreach collection="result" item="item" index="index">
+            into PLANT_SHOWS_POWER_DATA
+            (
+            <trim suffixOverrides=",">
+                <if test="item.realActivePower != null and item.realActivePower != ''">
+                    REAL_ACTIVE_POWER,
+                </if>
+
+                <if test="item.availablePower != null and item.availablePower != ''">
+                    AVAILABLE_POWER,
+                </if>
+
+                <if test="item.schedulerOfActivePower != null and item.schedulerOfActivePower != ''">
+                    SCHEDULER_OF_ACTIV_POWER,
+                </if>
+
+                <if test="item.theoreticalRealPower != null and item.theoreticalRealPower != ''">
+                    THEORETICAL_REAL_POWER,
+                </if>
+
+                <if test="item.plantCode != null and item.plantCode != ''">
+                    PLANT_CODE,
+                </if>
+
+                <if test="item.timestampPower != null">
+                    TIMESTAMP_POWER
+                </if>
+            </trim>
+            )
+            values (
+            <trim suffixOverrides=",">
+                <if test="item.realActivePower != null and item.realActivePower != ''">
+                    #{item.realActivePower},
+                </if>
+
+                <if test="item.availablePower != null and item.availablePower != ''">
+                    #{item.availablePower},
+                </if>
+
+                <if test="item.schedulerOfActivePower != null and item.schedulerOfActivePower != ''">
+                    #{item.schedulerOfActivePower},
+                </if>
+
+                <if test="item.theoreticalRealPower != null and item.theoreticalRealPower != ''">
+                    #{item.theoreticalRealPower},
+                </if>
+
+                <if test="item.plantCode != null and item.plantCode != ''">
+                    #{item.plantCode},
+                </if>
+
+                <if test="item.timestampPower != null">
+                    #{item.timestampPower}
+                </if>
+            </trim>
+            )
+        </foreach>
+        select 1 from dual
+    </insert>
+
+
+    <select id="getAllPlantName" resultType="com.hhgs.shows.model.PlantCode">
+        select <include refid="common"></include> from PLANT_SHOWS_PLANT_CODE
+    </select>
+
+    <select id="queryLastDayData" parameterType="com.hhgs.shows.model.ImportData"
+            resultType="com.hhgs.shows.model.History">
+        select
+        (sum(REAL_ACTIVE_POWER)/60)/10 realActivePower,
+        (sum(AVAILABLE_POWER)/60)/10 availablePower,
+        (sum(SCHEDULER_OF_ACTIV_POWER)/60)/10 schedulerOfActivePower,
+        (sum(THEORETICAL_REAL_POWER)/60)/10 theoreticalRealPower,
+        PLANT_CODE plantCode
+        from
+        PLANT_SHOWS_POWER_DATA
+        where 1=1 and to_number(REAL_ACTIVE_POWER) &gt; 0
+        <if test="con.startTime != null and con.endTime != null">
+            and TIMESTAMP_POWER &gt;= #{con.startTime} and TIMESTAMP_POWER &lt; #{con.endTime}
+        </if>
+        group by PLANT_CODE
+    </select>
+
+    <select id="getAllPlantCode" resultType="java.lang.Integer">
+        select PLANT_CODE from PLANT_SHOWS_PLANT_CODE
+    </select>
+
+
+    <select id="getPlantNamebyPlantCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select Plant_NAME from PLANT_SHOWS_PLANT_CODE where PLANT_CODE = #{plantCode}
+   </select>
+
+    <select id="getDataByTimeAndValue" parameterType="com.hhgs.shows.model.ImportData"
+            resultType="com.hhgs.shows.model.ImportData">
+        select <include refid="data"></include> from PLANT_SHOWS_POWER_DATA where 1=1
+        <if test="importData.realActivePower != null and importData.realActivePower != ''">
+            and REAL_ACTIVE_POWER = #{importData.realActivePower}
+        </if>
+
+        <if test="importData.theoreticalTotalPower != null and importData.theoreticalTotalPower != ''">
+            and THEORETICAL_TOTAL_POWER = #{importData.theoreticalTotalPower}
+        </if>
+
+        <if test="importData.theoreticalRealPower != null and importData.theoreticalRealPower != ''">
+            and THEORETICAL_REAL_POWER = #{importData.theoreticalRealPower}
+        </if>
+
+        <if test="importData.availablePower != null and importData.availablePower != ''">
+            and AVAILABLE_POWER = #{importData.availablePower}
+        </if>
+
+        <if test="importData.givenValueOfActivePower != null and importData.givenValueOfActivePower != ''">
+            and GIVEN_VALUE_OF_ACTIVE_POWER = #{importData.givenValueOfActivePower}
+        </if>
+
+        <if test="importData.schedulerOfActivePower != null and importData.schedulerOfActivePower != ''">
+            and SCHEDULER_OF_ACTIV_POWER = #{importData.schedulerOfActivePower}
+        </if>
+
+        <if test="importData.timestampPower != null">
+            and TIMESTAMP_POWER = #{importData.timestampPower}
+        </if>
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+     delete from PLANT_SHOWS_POWER_DATA where ID = #{id}
+    </delete>
+
+    <delete id="deleteByTime">
+      delete from PLANT_SHOWS_POWER_DATA where TIMESTAMP_POWER &gt;= to_date(#{start},'yyyy-mm-dd hh24:mi:ss') and TIMESTAMP_POWER &lt; to_date(#{end},'yyyy-mm-dd hh24:mi:ss') and PLANT_CODE=#{plantCode}
+    </delete>
+
+</mapper>

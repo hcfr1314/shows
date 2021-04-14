@@ -8,7 +8,7 @@ import com.hhgs.shows.model.DO.QueryObjectData;
 public class SelectDataFromDolphindb {
 
 
-    private static final String URL = "http://172.28.8.100/avatar-datamanage-service/data/queryMetaObjData?metaObjectName=";
+    private static final String URL = "http://172.28.8.25/avatar-datamanage-service/data/queryMetaObjData?metaObjectName=";
 
     private static final String SUCCESS_CODE = "0";
 

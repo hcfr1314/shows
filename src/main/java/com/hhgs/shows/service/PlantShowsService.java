@@ -1,5 +1,7 @@
 package com.hhgs.shows.service;
 
+import com.hhgs.shows.model.BasePoints;
+import com.hhgs.shows.model.DO.Dolphin.DolphinObject;
 import com.hhgs.shows.model.History;
 import com.hhgs.shows.model.ImportData;
 import com.hhgs.shows.model.ResponseData;
@@ -16,4 +18,7 @@ public interface PlantShowsService {
     Map<String,Object> selectDataByCondition(ImportData importData);
     List<History> queryHistory(ImportData conditon);
 
+    Map<Integer,List<BasePoints>> queryAllPoints();
+
+    Map<Integer,List<DolphinObject>> queryAllObjects();
 }

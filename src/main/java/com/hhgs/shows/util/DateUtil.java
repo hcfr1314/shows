@@ -2,6 +2,7 @@ package com.hhgs.shows.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,20 @@ public class DateUtil extends  Date{
 
 
     }
+
+    public static Date stringToDate (String date){
+        try{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date1= sdf.parse(date);
+            return date1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Date();
+        }
+
+
+    }
+
 
     public static Date getDateTimeFromInfluxdb(String date) {
         //String[] strings1 = date.split("T");
@@ -106,6 +121,20 @@ public class DateUtil extends  Date{
 
     }
 
+    /**
+     * 获取前一天的日期
+     * @return
+     */
+    public static String getBeforeOneDayTime() {
+        Date dnow = new Date(); //当前时间
+        Calendar calendar = Calendar.getInstance(); //得到日历
+        calendar.setTime(dnow);//把当前时间赋给日历
+        calendar.add(Calendar.DAY_OF_MONTH, -1);//设置为前一天
+        Date dbefore = calendar.getTime();//得到前一天的时间
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); //设置时间格式
+        String defaultBeforeDate = sdf.format(dbefore);//格式化前一天
+        return defaultBeforeDate;
+    }
 
     public static void main(String[] args) {
         String date="2019-07-13 17:10:00";

@@ -25,7 +25,7 @@
     <select id="getDataByCondition" parameterType="com.hhgs.shows.model.ImportData"
             resultType="com.hhgs.shows.model.ImportData">
         select <include refid="data"></include>  from PLANT_SHOWS_POWER_DATA
-        WHERE 1=1 and to_number(REAL_ACTIVE_POWER) &gt; 0
+        WHERE 1=1 and to_number(REAL_ACTIVE_POWER) &gt;= 0
         <if test="importData.startTime != null and importData.endTime != null">
             and TIMESTAMP_POWER &gt;= #{importData.startTime} and TIMESTAMP_POWER &lt;= #{importData.endTime}
         </if>
@@ -114,7 +114,7 @@
         PLANT_CODE plantCode
         from
         PLANT_SHOWS_POWER_DATA
-        where 1=1 and to_number(REAL_ACTIVE_POWER) &gt; 0
+        where 1=1 and to_number(REAL_ACTIVE_POWER) &gt;= 0
         <if test="con.startTime != null and con.endTime != null">
             and TIMESTAMP_POWER &gt;= #{con.startTime} and TIMESTAMP_POWER &lt; #{con.endTime}
         </if>
@@ -169,5 +169,27 @@
     <delete id="deleteByTime">
       delete from PLANT_SHOWS_POWER_DATA where TIMESTAMP_POWER &gt;= to_date(#{start},'yyyy-mm-dd hh24:mi:ss') and TIMESTAMP_POWER &lt; to_date(#{end},'yyyy-mm-dd hh24:mi:ss') and PLANT_CODE=#{plantCode}
     </delete>
+
+    <sql id="basePoints">
+        ORG_POINT_CODE orgId,
+        STATION_ID plantCode,
+        BUS_CODE description,
+        ORG_TYPE orgType
+    </sql>
+
+    <select id="queryAllPoints" resultType="com.hhgs.shows.model.BasePoints">
+        select <include refid="basePoints"></include> from PRESENTATION_DATA_RELATE
+    </select>
+
+    <sql id="object">
+        OBJECT_NAME_2 plantCode,
+        OBJECT_NAME_1 dataObjectName,
+        SITE_NAME plantName
+    </sql>
+
+
+    <select id="queryAllDolphinObject" resultType="com.hhgs.app.model.DO.hbase.HbaseObject">
+        select <include refid="object"/> from SITE_DATA_OBJECT_RELATE where BUS_TYPE = 2
+    </select>
 
 </mapper>

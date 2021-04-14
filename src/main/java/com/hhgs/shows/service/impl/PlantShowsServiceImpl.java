@@ -2,6 +2,8 @@ package com.hhgs.shows.service.impl;
 
 import com.hhgs.shows.mapper.HistoryMapper;
 import com.hhgs.shows.mapper.PlantShowsMapper;
+import com.hhgs.shows.model.BasePoints;
+import com.hhgs.shows.model.DO.Dolphin.DolphinObject;
 import com.hhgs.shows.model.History;
 import com.hhgs.shows.model.ImportData;
 import com.hhgs.shows.model.ResponseData;
@@ -160,6 +162,20 @@ public class PlantShowsServiceImpl implements PlantShowsService {
         return histories;
     }
 
+    @Override
+    public Map<Integer, List<BasePoints>> queryAllPoints() {
+        List<BasePoints> basePoints = plantShowsMapper.queryAllPoints();
+        Map<Integer, List<BasePoints>> collect = basePoints.stream().collect(Collectors.groupingBy(BasePoints::getPlantCode));
+        return collect;
+    }
+
+    @Override
+    public Map<Integer, List<DolphinObject>> queryAllObjects() {
+        List<DolphinObject> dolphinObjects = plantShowsMapper.queryAllDolphinObject();
+        Map<Integer, List<DolphinObject>> collect = dolphinObjects.stream().collect(Collectors.groupingBy(DolphinObject::getPlantCode));
+        return collect;
+    }
+
     @Transactional
     public void deleteData(List<ImportData> importDataList,int plantCode) throws ParseException {
         List<String> timeList = getTimeList(importDataList);
@@ -194,5 +210,6 @@ public class PlantShowsServiceImpl implements PlantShowsService {
         }
         return timesList;
     }
+
 
 }

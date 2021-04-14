@@ -1,5 +1,7 @@
 package com.hhgs.shows.mapper;
 
+import com.hhgs.shows.model.BasePoints;
+import com.hhgs.shows.model.DO.Dolphin.DolphinObject;
 import com.hhgs.shows.model.History;
 import com.hhgs.shows.model.ImportData;
 import com.hhgs.shows.model.PlantCode;
@@ -70,4 +72,8 @@ public interface PlantShowsMapper {
      * @param end
      */
     void deleteByTime(@Param("start") String start, @Param("end") String end,@Param("plantCode") int plantCode);
+
+    List<BasePoints> queryAllPoints();
+
+    List<DolphinObject> queryAllDolphinObject();
 }

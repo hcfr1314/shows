@@ -171,14 +171,14 @@
     </delete>
 
     <sql id="basePoints">
-        ORG_POINT_CODE orgId,
+        ORIG_POINT_CODE orgId,
         STATION_ID plantCode,
         BUS_CODE description,
         ORG_TYPE orgType
     </sql>
 
     <select id="queryAllPoints" resultType="com.hhgs.shows.model.BasePoints">
-        select <include refid="basePoints"></include> from PRESENTATION_DATA_RELATE
+        select <include refid="basePoints"></include> from PRESENTATION_DATA_RELATE where ORG_TYPE is not null
     </select>
 
     <sql id="object">
@@ -188,8 +188,8 @@
     </sql>
 
 
-    <select id="queryAllDolphinObject" resultType="com.hhgs.app.model.DO.hbase.HbaseObject">
-        select <include refid="object"/> from SITE_DATA_OBJECT_RELATE where BUS_TYPE = 2
+    <select id="queryAllDolphinObject" resultType="com.hhgs.shows.model.DO.Dolphin.DolphinObject">
+        select <include refid="object"/> from SITE_DATA_OBJECT_RELATE where BUS_TYPE = 2 and OBJECT_NAME_2 is not null
     </select>
 
 </mapper>

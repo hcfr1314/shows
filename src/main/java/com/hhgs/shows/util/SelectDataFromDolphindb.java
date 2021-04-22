@@ -14,7 +14,7 @@ public class SelectDataFromDolphindb {
 
     public static DolphinDBResult getDataFromInfluxdb(String dataObjectName, long startTime, long endTime, long id) {
 
-        String p = "{'starttime': '" + startTime + "ms','id':'" + id + "','fillPoint':'" + 0 + "','sampled':'" + 1800 + "','endtime': '" + endTime + "ms'}";
+        String p = "{'starttime': '" + startTime + "ms','id':'" + id + "','fillPoint':'" + 0 + "','sampled':'" + 60 + "','endtime': '" + endTime + "ms'}";
 
         QueryObjectData param = new QueryObjectData(p, null);
 

@@ -460,12 +460,12 @@ public class HttpUtils {
 		try {
 			response = httpClient.execute(httpPost);
 			HttpEntity responseEntity = response.getEntity();
-			System.out.println("响应状态为:" + response.getStatusLine());
+			//System.out.println("响应状态为:" + response.getStatusLine());
 
 			if (responseEntity != null) {
 				result = EntityUtils.toString(responseEntity);
-				System.out.println("响应长度为:" + responseEntity.getContentLength());
-				System.out.println("响应内容为:" + result);
+				//System.out.println("响应长度为:" + responseEntity.getContentLength());
+				//System.out.println("响应内容为:" + result);
 			}
 		} catch (ClientProtocolException e){
 			e.printStackTrace();
